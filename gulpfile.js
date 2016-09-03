@@ -26,16 +26,6 @@ var config = {
 };
 /* End base settings */
 
-
-gulp.task('browser-sync', function() {
-	browserSync({
-		server: {
-			baseDir: config.basePath
-		},
-		notify: false
-	});
-});
-
 gulp.task('sass', ['header'], function () {
 	return gulp.src(config.basePath + '/' + config.preprocessor + '/**/*.' + config.preprocessor)
 		.pipe(errorNotifier())
@@ -46,7 +36,6 @@ gulp.task('sass', ['header'], function () {
 		.pipe(autoprefixer(['last 15 versions']))
 		.pipe(cleanCSS())
 		.pipe(gulp.dest(config.basePath + '/css'))
-		.pipe(browserSync.reload({stream: true}))
 });
 
 gulp.task('scss', ['header'], function () {
@@ -59,7 +48,6 @@ gulp.task('scss', ['header'], function () {
 		.pipe(autoprefixer(['last 15 versions']))
 		.pipe(cleanCSS())
 		.pipe(gulp.dest(config.basePath + '/css'))
-		.pipe(browserSync.reload({stream: true}))
 });
 
 gulp.task('header', function () {
@@ -72,7 +60,6 @@ gulp.task('header', function () {
 		.pipe(autoprefixer(['last 15 versions']))
 		.pipe(cleanCSS())
 		.pipe(gulp.dest(config.basePath + '/header'))
-		.pipe(browserSync.reload({stream: true}))
 });
 
 gulp.task('libs', function () {
@@ -86,11 +73,11 @@ gulp.task('libs', function () {
 		.pipe(gulp.dest(config.basePath + '/js'));
 });
 
-gulp.task('watch', [config.preprocessor, 'libs', 'browser-sync'], function () {
+gulp.task('watch', [config.preprocessor, 'libs'], function () {
 	gulp.watch(config.basePath + '/header/header.' + config.preprocessor, ['header']);
 	gulp.watch(config.basePath + '/' + config.preprocessor + '/**/*.' + config.preprocessor, [config.preprocessor]);
-	gulp.watch(config.basePath + '/*.html', browserSync.reload);
-	gulp.watch(config.basePath + '/js/**/*.js', browserSync.reload);
+	gulp.watch(config.basePath + '/*.html');
+	gulp.watch(config.basePath + '/js/**/*.js');
 });
 
 gulp.task('imagemin', function() {
@@ -107,7 +94,7 @@ gulp.task('imagemin', function() {
 
 gulp.task('removedist', function() { return del.sync(config.sourcePath); });
 
-gulp.task('build', ['removedist', 'buildhtml', 'imagemin', config.preprocessor, 'libs'], function() {
+gulp.task('build', ['removedist', 'imagemin', config.preprocessor, 'libs'], function() {
 	var buildCss = gulp.src([
 		'app/css/fonts.min.css',
 		'app/css/main.min.css'

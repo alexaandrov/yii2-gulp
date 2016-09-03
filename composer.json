@@ -9,5 +9,7 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {}
+    "require": {
+        "eloquent/composer-npm-bridge": ">=3.0.0"
+    }
 }

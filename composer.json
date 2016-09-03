@@ -1,14 +1,14 @@
 {
     "name": "alexaandrov/yii2-gulp",
     "description": "Yii2 gulp collector for yii2",
-    "type": "composer-plugin",
+    "type": "vcs",
     "authors": [
         {
             "name": "Grigory Alexandrov",
             "email": "alexaandrov@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
         "eloquent/composer-npm-bridge": ">=3.0.0"
     }

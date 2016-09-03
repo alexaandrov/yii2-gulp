@@ -1,0 +1,13 @@
+{
+    "name": "alexaandrov/yii2-gulp",
+    "description": "Yii2 gulp collector for yii2",
+    "type": "composer-plugin",
+    "authors": [
+        {
+            "name": "Grigory Alexandrov",
+            "email": "alexaandrov@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}

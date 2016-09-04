@@ -15,7 +15,7 @@ const gulp = require('gulp'),
     errorNotifier = require('gulp-error-notifier');
 
 /* Base settings */
-const part = "backend";
+const part = "frontend";
 
 var config = {
     preprocessor: 'scss',
@@ -58,6 +58,10 @@ gulp.task('js', function () {
         .pipe(gulp.dest(config.sourcePath + '/js'));
 });
 
+gulp.task('fonts', function () {
+    return gulp.src(config.basePath + '/fonts/**/*').pipe(gulp.dest(config.sourcePath + '/fonts'));
+});
+
 gulp.task('libs', function () {
     return gulp.src([
         config.bowerPath + '/jquery/dist/jquery.min.js',
@@ -85,11 +89,11 @@ gulp.task('clearcache', function () {
     return cache.clearAll();
 });
 
-gulp.task('build', [config.preprocessor, 'js', 'libs', 'imagemin']);
+gulp.task('build', [config.preprocessor, 'js', 'libs', 'imagemin', 'fonts']);
 
 gulp.task('watch', [config.preprocessor, 'libs'], function () {
     gulp.watch('common/web/frontend/' + config.preprocessor + '/**/*.' + config.preprocessor, [config.preprocessor]);
     gulp.watch(config.basePath + '/js/**/*.js', ['js']);
 });
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['build', 'watch']);

@@ -35,8 +35,7 @@ phpunit.phar
 .phpintel
 
 /node_modules/
-/dist/
-/app/css/
-/app/js/libs.min.js
+/backend
+/frontend
 
 npm-debug.log

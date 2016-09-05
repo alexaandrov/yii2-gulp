@@ -18,7 +18,7 @@ const gulp          = require('gulp'),
 /* Base settings */
 const base = {
     part: 'frontend',
-    preprocessor: 'scss'
+    preprocessor: 'sass'
 };
 
 const path = {
@@ -44,20 +44,6 @@ gulp.task('browser-sync', function () {
 });
 
 gulp.task('sass', function () {
-    del.sync(path.dest + '/css/**/*');
-    return gulp.src(path.source + '/' + base.preprocessor + '/**/*.' + base.preprocessor)
-        .pipe(errorNotifier())
-        .pipe(sass({
-            includePaths: bourbon.includePaths
-        }).on('error', sass.logError))
-        .pipe(rename({suffix: '.min', prefix: ''}))
-        .pipe(autoprefixer(['last 15 versions']))
-        .pipe(cleanCSS())
-        .pipe(browserSync.reload({stream: true}))
-        .pipe(gulp.dest(path.dest + '/css'));
-});
-
-gulp.task('scss', function () {
     del.sync(path.dest + '/css/**/*');
     return gulp.src(path.source + '/' + base.preprocessor + '/**/*.' + base.preprocessor)
         .pipe(errorNotifier())

@@ -20,6 +20,7 @@
     "gulp-uglify": "^2.0.0",
     "imagemin-pngquant": "^5.0.0",
     "node-bourbon": "^4.2.8",
-    "gulp-error-notifier": "^1.1.0"
+    "gulp-error-notifier": "^1.1.0",
+    "browser-sync": "^2.12.0"
   }
 }

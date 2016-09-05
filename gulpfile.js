@@ -1,18 +1,19 @@
 'use strict';
 
-const gulp = require('gulp'),
-    sass = require('gulp-sass'),
-    concat = require('gulp-concat'),
-    uglify = require('gulp-uglify'),
-    cleanCSS = require('gulp-clean-css'),
-    rename = require('gulp-rename'),
-    del = require('del'),
-    imagemin = require('gulp-imagemin'),
-    pngquant = require('imagemin-pngquant'),
-    cache = require('gulp-cache'),
-    autoprefixer = require('gulp-autoprefixer'),
-    bourbon = require('node-bourbon'),
-    errorNotifier = require('gulp-error-notifier');
+const gulp          = require('gulp'),
+    sass            = require('gulp-sass'),
+    concat          = require('gulp-concat'),
+    uglify          = require('gulp-uglify'),
+    cleanCSS        = require('gulp-clean-css'),
+    rename          = require('gulp-rename'),
+    del             = require('del'),
+    imagemin        = require('gulp-imagemin'),
+    pngquant        = require('imagemin-pngquant'),
+    cache           = require('gulp-cache'),
+    autoprefixer    = require('gulp-autoprefixer'),
+    bourbon         = require('node-bourbon'),
+    errorNotifier   = require('gulp-error-notifier'),
+    browserSync     = require('browser-sync');
 
 /* Base settings */
 const part = "frontend";
@@ -26,7 +27,22 @@ var config = {
 };
 /* End base settings */
 
+gulp.task('browser-sync', function () {
+    browserSync({
+        // If you work with server
+        proxy: {
+            target: "http://yousite.dev"
+        },
+        // If you work local
+        // server: {
+        //     baseDir: config.basePath
+        // },
+        notify: true,
+    });
+});
+
 gulp.task('sass', function () {
+    del.sync(config.sourcePath + '/css/**/*');
     return gulp.src(config.basePath + '/' + config.preprocessor + '/**/*.' + config.preprocessor)
         .pipe(errorNotifier())
         .pipe(sass({
@@ -35,31 +51,33 @@ gulp.task('sass', function () {
         .pipe(rename({suffix: '.min', prefix: ''}))
         .pipe(autoprefixer(['last 15 versions']))
         .pipe(cleanCSS())
-        .pipe(gulp.dest(config.sourcePath + '/css'))
+        .pipe(browserSync.reload({stream: true}))
+        .pipe(gulp.dest(config.sourcePath + '/css'));
 });
 
 gulp.task('scss', function () {
+    del.sync(config.sourcePath + '/css/**/*');
     return gulp.src(config.basePath + '/' + config.preprocessor + '/**/*.' + config.preprocessor)
         .pipe(errorNotifier())
-        .pipe(sass({
+        .pipe(sass.sync({
+            outputStyle: 'compressed',
             includePaths: bourbon.includePaths
         }).on('error', sass.logError))
         .pipe(rename({suffix: '.min', prefix: ''}))
         .pipe(autoprefixer(['last 15 versions']))
         .pipe(cleanCSS())
-        .pipe(gulp.dest(config.sourcePath + '/css'))
+        .pipe(browserSync.reload({stream: true}))
+        .pipe(gulp.dest(config.sourcePath + '/css'));
 });
 
 gulp.task('js', function () {
+    del.sync(config.sourcePath + '/js/**/*');
     return gulp.src(config.basePath + '/js/**/*.js')
         .pipe(errorNotifier())
         .pipe(concat('common.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest(config.sourcePath + '/js'));
-});
-
-gulp.task('fonts', function () {
-    return gulp.src(config.basePath + '/fonts/**/*').pipe(gulp.dest(config.sourcePath + '/fonts'));
+        .pipe(gulp.dest(config.sourcePath + '/js'))
+        .pipe(browserSync.reload({stream: true}));
 });
 
 gulp.task('libs', function () {
@@ -73,7 +91,13 @@ gulp.task('libs', function () {
         .pipe(gulp.dest(config.sourcePath + '/js'));
 });
 
+gulp.task('fonts', function () {
+    del.sync(config.sourcePath + '/fonts/**/*');
+    return gulp.src(config.basePath + '/fonts/**/*').pipe(gulp.dest(config.sourcePath + '/fonts'));
+});
+
 gulp.task('imagemin', function () {
+    del.sync(config.sourcePath + '/img/**/*');
     return gulp.src(config.basePath + '/img/**/*')
         .pipe(errorNotifier())
         .pipe(cache(imagemin({
@@ -91,9 +115,9 @@ gulp.task('clearcache', function () {
 
 gulp.task('build', [config.preprocessor, 'js', 'libs', 'imagemin', 'fonts']);
 
-gulp.task('watch', [config.preprocessor, 'libs'], function () {
+gulp.task('watch', [config.preprocessor, 'libs', 'browser-sync'], function () {
     gulp.watch('common/web/frontend/' + config.preprocessor + '/**/*.' + config.preprocessor, [config.preprocessor]);
-    gulp.watch(config.basePath + '/js/**/*.js', ['js']);
+    gulp.watch(config.basePath + '/js/**/*.js', ['js']), gulp.watch(part + '/views/**/*.php', browserSync.reload);
 });
 
 gulp.task('default', ['build', 'watch']);

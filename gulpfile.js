@@ -83,8 +83,8 @@ gulp.task('js', function () {
 
 gulp.task('libs', function () {
     return gulp.src([
-        base.bowerPath + '/jquery/dist/jquery.min.js',
-        base.bowerPath + '/bootstrap/dist/js/bootstrap.min.js'
+        // base.bowerPath + '/jquery/dist/jquery.min.js',
+        // base.bowerPath + '/bootstrap/dist/js/bootstrap.min.js'
     ])
         .pipe(errorNotifier())
         .pipe(concat('libs.min.js'))

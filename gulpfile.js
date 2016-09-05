@@ -18,7 +18,7 @@ const gulp          = require('gulp'),
 /* Base settings */
 const base = {
     part: 'frontend',
-    preprocessor: 'sass'
+    preprocessor: 'scss'
 };
 
 const path = {
@@ -54,7 +54,20 @@ gulp.task('sass', function () {
         .pipe(rename({suffix: '.min', prefix: ''}))
         .pipe(autoprefixer(['last 15 versions']))
         .pipe(cleanCSS())
-        .pipe(browserSync.reload({stream: true}))
+        .pipe(gulp.dest(path.dest + '/css'));
+});
+
+gulp.task('scss', function () {
+    del.sync(path.dest + '/css/**/*');
+    return gulp.src(path.source + '/' + base.preprocessor + '/**/*.' + base.preprocessor)
+        .pipe(errorNotifier())
+        .pipe(sass.sync({
+            outputStyle: 'compressed',
+            includePaths: bourbon.includePaths
+        }).on('error', sass.logError))
+        .pipe(rename({suffix: '.min', prefix: ''}))
+        .pipe(autoprefixer(['last 15 versions']))
+        .pipe(cleanCSS())
         .pipe(gulp.dest(path.dest + '/css'));
 });
 
@@ -70,8 +83,8 @@ gulp.task('js', function () {
 
 gulp.task('libs', function () {
     return gulp.src([
-        // base.bowerPath + '/jquery/dist/jquery.min.js',
-        // base.bowerPath + '/bootstrap/dist/js/bootstrap.min.js'
+        base.bowerPath + '/jquery/dist/jquery.min.js',
+        base.bowerPath + '/bootstrap/dist/js/bootstrap.min.js'
     ])
         .pipe(errorNotifier())
         .pipe(concat('libs.min.js'))
@@ -104,8 +117,9 @@ gulp.task('clearcache', function () {
 gulp.task('build', [base.preprocessor, 'js', 'libs', 'imagemin', 'fonts']);
 
 gulp.task('watch', [base.preprocessor, 'libs', 'browser-sync'], function () {
-    gulp.watch('common/web/frontend/' + base.preprocessor + '/**/*.' + base.preprocessor, [base.preprocessor]);
-    gulp.watch(path.source + '/js/**/*.js', ['js']);
+    gulp.watch('common/web/' + base.part + '/' + base.preprocessor + '/**/*.' + base.preprocessor, [base.preprocessor]);
+    gulp.watch(path.dest + '/js/**/*.js', browserSync.reload);
+    gulp.watch(path.dest + '/css/**/*.css', browserSync.reload);
     gulp.watch(base.part + '/views/**/*.php', browserSync.reload);
 });
 

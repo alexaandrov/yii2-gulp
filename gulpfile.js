@@ -24,7 +24,7 @@ const base = {
 const path = {
     bower: 'vendor/bower',
     npm: 'node_modules',
-    source: 'common/web/' + base.part,
+    source: 'assets/src/' + base.part,
     dest: base.part + '/web'
 };
 /* End base settings */

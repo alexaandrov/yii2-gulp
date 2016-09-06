@@ -117,7 +117,7 @@ gulp.task('clearcache', function () {
 gulp.task('build', [base.preprocessor, 'js', 'libs', 'imagemin', 'fonts']);
 
 gulp.task('watch', [base.preprocessor, 'libs', 'browser-sync'], function () {
-    gulp.watch('common/web/' + base.part + '/' + base.preprocessor + '/**/*.' + base.preprocessor, [base.preprocessor]);
+    gulp.watch(path.source + '/' + base.preprocessor + '/**/*.' + base.preprocessor, [base.preprocessor]);
     gulp.watch(path.dest + '/js/**/*.js', browserSync.reload);
     gulp.watch(path.dest + '/css/**/*.css', browserSync.reload);
     gulp.watch(base.part + '/views/**/*.php', browserSync.reload);

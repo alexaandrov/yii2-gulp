@@ -72,16 +72,15 @@ gulp.task('scss', function () {
 });
 
 gulp.task('js', function () {
-    del.sync(path.dest + '/js/**/*');
     return gulp.src(path.source + '/js/**/*.js')
         .pipe(errorNotifier())
         .pipe(concat('common.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest(path.dest + '/js'))
-        .pipe(browserSync.reload({stream: true}));
+        .pipe(gulp.dest(path.dest + '/js'));
 });
 
 gulp.task('libs', function () {
+    del.sync(path.dest + '/js/**/*');
     return gulp.src([
         // path.bower + '/jquery/dist/jquery.min.js',
         // path.bower + '/bootstrap/dist/js/bootstrap.min.js'
@@ -114,11 +113,13 @@ gulp.task('clearcache', function () {
     return cache.clearAll();
 });
 
-gulp.task('build', [base.preprocessor, 'js', 'libs', 'imagemin', 'fonts']);
 
-gulp.task('watch', [base.preprocessor, 'libs', 'browser-sync'], function () {
+gulp.task('build', [base.preprocessor, 'libs', 'js', 'imagemin', 'fonts']);
+
+gulp.task('watch', [base.preprocessor, 'libs', 'js', 'browser-sync'], function () {
     gulp.watch(path.source + '/' + base.preprocessor + '/**/*.' + base.preprocessor, [base.preprocessor]);
-    gulp.watch(path.source + '/css/**/*.css', [base.preprocessor, browserSync.reload]);
+    gulp.watch(path.source + '/css/**/*.css', [base.preprocessor]);
+    gulp.watch(path.source + '/js/**/*.js', ['js']);
     gulp.watch(path.dest + '/js/**/*.js', browserSync.reload);
     gulp.watch(path.dest + '/css/**/*.css', browserSync.reload);
     gulp.watch(base.part + '/views/**/*.php', browserSync.reload);
